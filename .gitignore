@@ -1,0 +1,22 @@
+# Virtual Environment
+.venv/
+
+# Python Cache
+__pycache__/
+*.pyc
+
+# IDE Files
+.idea/
+
+# Test Reports
+reports/
+htmlcov/
+
+# Logs
+logs/
+
+# Screenshots
+screenshots/
+
+# Environment Files
+.env
