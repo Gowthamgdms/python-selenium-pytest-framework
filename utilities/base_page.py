@@ -1,32 +1,19 @@
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.common.by import By
+from utilities.wait_utils import WaitUtils
+
 
 class BasePage:
 
     def __init__(self, driver):
         self.driver = driver
-        self.wait = WebDriverWait(driver, 10)
+        self.wait = WaitUtils(driver)
 
     def click(self, locator):
-        element = self.wait.until(
-            EC.element_to_be_clickable(locator)
-        )
-        element.click()
+        self.wait.wait_for_clickable(locator).click()
 
     def enter_text(self, locator, text):
-        element = self.wait.until(
-            EC.visibility_of_element_located(locator)
-        )
+        element = self.wait.wait_for_visibility(locator)
         element.clear()
         element.send_keys(text)
 
     def get_text(self, locator):
-        element = self.wait.until(
-            EC.visibility_of_element_located(locator)
-        )
-        return element.text
-
-
-
-
+        return self.wait.wait_for_visibility(locator).text

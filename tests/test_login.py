@@ -13,3 +13,5 @@ def test_login(setup):
     login.click_login()
 
     assert "inventory" in driver.current_url
+
+    assert False
