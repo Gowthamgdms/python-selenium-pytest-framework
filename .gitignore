@@ -7,6 +7,7 @@ __pycache__/
 
 # IDE Files
 .idea/
+*.iml
 
 # Test Reports
 reports/
