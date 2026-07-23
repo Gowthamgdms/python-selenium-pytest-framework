@@ -18,7 +18,7 @@ def setup(request):
     driver.get(Config.BASE_URL)
     yield driver
 
-    if hasattr(request.node,"rep_call") and request.node.rep.call.failed:
+    if hasattr(request.node,"rep_call") and request.node.rep_call.failed:
         os.makedirs("screenshots",exist_ok=True)
         driver.save_screenshot(f"screenshots/{request.node.name}.png")
         logger.error(f"Screenshot captured:{request.node.name}.png")
@@ -27,9 +27,4 @@ def setup(request):
 
     driver.quit()
 
-    @pytest.hookimpl(hookwrapper=True)
-    def pytest_runtest_makereport(item,call):
-        outcome = yield
-        rep = outcome.get_result()
-        setattr(item,"rep_"+rep.when,rep)
 

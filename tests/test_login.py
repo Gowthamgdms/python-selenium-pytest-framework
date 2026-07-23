@@ -1,17 +1,25 @@
+from config.config import Config
 from pages.login_page import LoginPage
+from utilities.excel_reader import ExcelReader
+from utilities.json_reader import JsonReader
 
+#test_data=JsonReader.read_json("testdata/login_data.json")
 
-def test_login(setup):
+test_data=ExcelReader.read_data("testdata/login_data.xlsx","login_data")
+
+class TestLogin:
+ def test_login(self,setup):
     driver = setup
 
-    driver.get("https://www.saucedemo.com/")
+    driver.get(Config.BASE_URL)
 
-    login = LoginPage(driver)
+    login_page = LoginPage(driver)
 
-    login.enter_username("standard_user")
-    login.enter_password("secret_sauce")
-    login.click_login()
+    # JSON version
+    #login_page.login(test_data[0]["username"],test_data[0]["password"])
+
+    # Excel version
+    login_page.login(test_data[0][0],test_data[0][1])
+
 
     assert "inventory" in driver.current_url
-
-    assert False
