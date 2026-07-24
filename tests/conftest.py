@@ -6,6 +6,8 @@ from utilities.logger import LogGenerator
 from config.config import Config
 import os
 from utilities.screenshot_utils import ScreenshotUtils
+from datetime import datetime
+
 
 logger = LogGenerator.loggen()
 
@@ -39,6 +41,13 @@ def pytest_runtest_makereport(item,call):
             ScreenshotUtils.capture_screenshot(driver,item.name)
 
 
+def pytest_html_report_title(report):
+    report.title = "Python Selenium Pytest Automation Report"
+
+def pytest_configure(config):
+    config.stash["framework"] = "Python Selenium Pytest Framework"
+    config.stash["tester"] = "Gowtham S"
+    config.stash["exection_time"] = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
 
 
 
