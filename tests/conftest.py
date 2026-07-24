@@ -5,6 +5,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 from utilities.logger import LogGenerator
 from config.config import Config
 import os
+from utilities.screenshot_utils import ScreenshotUtils
 
 logger = LogGenerator.loggen()
 
@@ -26,5 +27,24 @@ def setup(request):
     logger.info("Closing Chrome Browser")
 
     driver.quit()
+
+
+@pytest.hookimpl(hookwrapper=True)
+def pytest_runtest_makereport(item,call):
+    outcome = yield
+    report = outcome.get_result()
+    if report.when=="call" and report.failed:
+        driver = item.funcargs.get("setup")
+        if driver:
+            ScreenshotUtils.capture_screenshot(driver,item.name)
+
+
+
+
+
+
+
+
+
 
 
