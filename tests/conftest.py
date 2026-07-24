@@ -11,10 +11,15 @@ from config.config import Config
 import os
 from utilities.screenshot_utils import ScreenshotUtils
 from datetime import datetime
+from config.qa_config import QAConfig
+from config.uat_config import UATConfig
+from config.prod_config import PRODConfig
 
 
 def pytest_addoption(parser):
     parser.addoption("--browser",action="store",default="chrome",help="Browser Name")
+
+    parser.addoption("--env",action="store",default="qa",help="Environment Name")
 
 
 logger = LogGenerator.loggen()
@@ -22,7 +27,8 @@ logger = LogGenerator.loggen()
 
 @pytest.fixture()
 def setup(request):
-    browser=request.config.getoption("--browser")
+    browser = request.config.getoption("--browser")
+    env = request.config.getoption("--env")
 
     if browser.lower() == "chrome":
         logger.info("Launching Chrome Browser")
@@ -39,8 +45,22 @@ def setup(request):
     else:
         raise Exception(f"Browser '{browser}' is not supported.")
 
+
+    if env.lower() == "qa":
+        base_url = QAConfig.BASE_URL
+
+    elif env.lower() == "uat":
+        base_url= UATConfig.BASE_URL
+
+    elif env.lower() == "prod":
+        base_url = PRODConfig.BASE_URL
+
+    else:
+        raise Exception(f"Environment '{env}' is not supported.")
+
+
     driver.maximize_window()
-    driver.get(Config.BASE_URL)
+    driver.get(base_url)
     yield driver
 
     if hasattr(request.node,"rep_call") and request.node.rep_call.failed:
