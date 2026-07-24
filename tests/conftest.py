@@ -1,7 +1,11 @@
 import pytest
 from selenium import webdriver
-from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.service import Service as ChromeService
+from selenium.webdriver.firefox.service import Service as FirefoxService
+from selenium.webdriver.edge.service import Service as EdgeService
 from webdriver_manager.chrome import ChromeDriverManager
+from webdriver_manager.firefox import GeckoDriverManager
+from webdriver_manager.microsoft import EdgeChromiumDriverManager
 from utilities.logger import LogGenerator
 from config.config import Config
 import os
@@ -9,14 +13,32 @@ from utilities.screenshot_utils import ScreenshotUtils
 from datetime import datetime
 
 
+def pytest_addoption(parser):
+    parser.addoption("--browser",action="store",default="chrome",help="Browser Name")
+
+
 logger = LogGenerator.loggen()
 
 
 @pytest.fixture()
 def setup(request):
+    browser=request.config.getoption("--browser")
 
-    logger.info("Launching Chrome Browser")
-    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+    if browser.lower() == "chrome":
+        logger.info("Launching Chrome Browser")
+        driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()))
+
+    elif browser.lower() == "firefox":
+        logger.info("Launching Firefox Browser")
+        driver = webdriver.Firefox(service=FirefoxService(GeckoDriverManager().install()))
+
+    elif browser.lower() == "edge":
+        logger.info("Launching Edge Browser")
+        driver = webdriver.Edge(service=EdgeService(EdgeChromiumDriverManager().install()))
+
+    else:
+        raise Exception(f"Browser '{browser}' is not supported.")
+
     driver.maximize_window()
     driver.get(Config.BASE_URL)
     yield driver
@@ -26,7 +48,7 @@ def setup(request):
         driver.save_screenshot(f"screenshots/{request.node.name}.png")
         logger.error(f"Screenshot captured:{request.node.name}.png")
 
-    logger.info("Closing Chrome Browser")
+    logger.info(f"Closing {browser}Browser")
 
     driver.quit()
 
@@ -46,8 +68,8 @@ def pytest_html_report_title(report):
 
 def pytest_configure(config):
     config.stash["framework"] = "Python Selenium Pytest Framework"
-    config.stash["tester"] = "Gowtham S"
-    config.stash["exection_time"] = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+    config.stash["tester"] = "Gowtham"
+    config.stash["execution_time"] = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
 
 
 
