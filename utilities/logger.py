@@ -1,10 +1,10 @@
 import logging
 import os
 
-class LogGenerator:
+class Logger:
 
     @staticmethod
-    def loggen():
+    def get_logger():
 
         log_path = os.path.join("logs", "framework.log")
 
