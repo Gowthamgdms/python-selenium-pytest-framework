@@ -6,7 +6,7 @@ from selenium.webdriver.edge.service import Service as EdgeService
 from webdriver_manager.chrome import ChromeDriverManager
 from webdriver_manager.firefox import GeckoDriverManager
 from webdriver_manager.microsoft import EdgeChromiumDriverManager
-from utilities.logger import LogGenerator
+from utilities.logger import Logger
 from config.config import Config
 import os
 from utilities.screenshot_utils import ScreenshotUtils
@@ -22,7 +22,7 @@ def pytest_addoption(parser):
     parser.addoption("--env",action="store",default="qa",help="Environment Name")
 
 
-logger = LogGenerator.loggen()
+logger = Logger.get_logger()
 
 
 @pytest.fixture()
