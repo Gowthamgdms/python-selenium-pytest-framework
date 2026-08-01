@@ -1,25 +1,37 @@
-from config.config import Config
 from pages.login_page import LoginPage
 from utilities.excel_reader import ExcelReader
 from utilities.json_reader import JsonReader
+import pytest
 
-#test_data=JsonReader.read_json("testdata/login_data.json")
+# JSON Version
+test_data = JsonReader.read_json("testdata/login_data.json")
 
-test_data=ExcelReader.read_data("testdata/login_data.xlsx","login_data")
+# Excel Version
+# test_data = ExcelReader.read_data("testdata/login_data.xlsx", "login_data")
+
 
 class TestLogin:
- def test_login(self,setup):
-    driver = setup
 
-    driver.get(Config.BASE_URL)
+    # Excel Version
+    # @pytest.mark.parametrize("username,password", test_data)
 
-    login_page = LoginPage(driver)
+    # JSON Version
+    @pytest.mark.parametrize("data", test_data)
 
-    # JSON version
-    #login_page.login(test_data[0]["username"],test_data[0]["password"])
+    # Excel Version
+    # def test_login(self, setup, username, password):
 
-    # Excel version
-    login_page.login(test_data[0][0],test_data[0][1])
+    # JSON Version
+    def test_login(self, setup, data):
 
+        driver = setup
 
-    assert "inventory" in driver.current_url
+        login_page = LoginPage(driver)
+
+        # JSON Version
+        login_page.login(data["username"], data["password"])
+
+        # Excel Version
+        # login_page.login(username, password)
+
+        assert "inventory" in driver.current_url
